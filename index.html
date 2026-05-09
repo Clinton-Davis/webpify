@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebPify – Image Format Converter</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:           #06101e;
+      --bg-card:      #0c1b2e;
+      --teal:         #00d4e8;
+      --teal-dim:     rgba(0, 212, 232, 0.18);
+      --teal-border:  rgba(0, 212, 232, 0.32);
+      --teal-glow:    rgba(0, 212, 232, 0.07);
+      --text:         #dff0f5;
+      --muted:        #5d7e95;
+      --border:       rgba(255,255,255,0.06);
+      --green:        #4ade80;
+      --orange:       #fb923c;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── Neural Network Background ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding: 56px 20px 36px;
+    }
+
+    .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 18px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .logo-icon {
+      width: 52px;
+      height: 52px;
+      filter: drop-shadow(0 0 14px var(--teal));
+    }
+
+    .logo-row h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #fff;
+    }
+
+    .logo-row h1 span { color: var(--teal); }
+
+    .header-sub {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 380px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .header-pills {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1px solid var(--teal-border);
+      border-radius: 50px;
+      padding: 4px 12px;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 10px 20px 60px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--teal-border);
+      border-radius: 18px;
+      padding: 38px;
+      width: 100%;
+      max-width: 640px;
+      box-shadow:
+        0 0 0 1px rgba(0,212,232,0.04),
+        0 0 60px var(--teal-glow),
+        0 24px 64px rgba(0,0,0,0.45);
+    }
+
+    .card-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .card-heading {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 28px;
+    }
+
+    /* ── Drop Zone ── */
+    .drop-zone {
+      position: relative;
+      border: 2px dashed var(--teal-border);
+      border-radius: 14px;
+      padding: 52px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--teal-glow);
+    }
+
+    .drop-zone:hover, .drop-zone.over {
+      border-color: var(--teal);
+      background: rgba(0,212,232,0.11);
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .drop-icon {
+      width: 52px;
+      height: 52px;
+      color: var(--teal);
+      margin: 0 auto 18px;
+    }
+
+    .drop-primary {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .drop-primary strong { color: var(--teal); }
+
+    .drop-formats {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    /* ── File Info Bar ── */
+    .file-bar {
+      display: none;
+      align-items: center;
+      gap: 13px;
+      margin-top: 14px;
+      padding: 13px 16px;
+      background: rgba(0,212,232,0.06);
+      border: 1px solid var(--teal-border);
+      border-radius: 11px;
+    }
+
+    .file-bar.show { display: flex; }
+
+    .file-bar-icon {
+      width: 32px;
+      height: 32px;
+      color: var(--teal);
+      flex-shrink: 0;
+    }
+
+    .file-bar-info { flex: 1; min-width: 0; }
+
+    .file-bar-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-bar-meta {
+      font-size: 0.73rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .file-bar-clear {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+      line-height: 1;
+    }
+
+    .file-bar-clear:hover { color: #ff6b6b; background: rgba(255,107,107,0.1); }
+
+    /* ── Options ── */
+    .options { display: none; }
+    .options.show { display: block; }
+
+    .hr { height: 1px; background: var(--border); margin: 28px 0; }
+
+    .opt-label {
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* Format toggle */
+    .fmt-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+
+    .fmt-btn {
+      flex: 1;
+      padding: 13px 10px;
+      background: transparent;
+      border: 1px solid var(--teal-border);
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .fmt-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: var(--teal-glow);
+    }
+
+    .fmt-btn.active {
+      border-color: var(--teal);
+      background: var(--teal-dim);
+      color: var(--teal);
+      box-shadow: 0 0 18px rgba(0,212,232,0.12);
+    }
+
+    /* Quality slider */
+    .quality-row { display: none; margin-bottom: 26px; }
+    .quality-row.show { display: block; }
+
+    .quality-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .quality-val {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--teal);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 5px;
+      outline: none;
+      background: linear-gradient(
+        to right,
+        var(--teal) 0%,
+        var(--teal) var(--pct, 85%),
+        rgba(255,255,255,0.1) var(--pct, 85%),
+        rgba(255,255,255,0.1) 100%
+      );
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 10px rgba(0,212,232,0.6);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 10px rgba(0,212,232,0.6);
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Convert button */
+    .convert-btn {
+      width: 100%;
+      padding: 17px;
+      background: linear-gradient(135deg, #00b5c8, #00d4e8);
+      color: #04111f;
+      border: none;
+      border-radius: 11px;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 24px rgba(0,212,232,0.28);
+    }
+
+    .convert-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,212,232,0.42);
+    }
+
+    .convert-btn:active { transform: translateY(0); }
+
+    .convert-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ── Result ── */
+    .result { display: none; }
+    .result.show { display: block; }
+
+    .result-label {
+      font-size: 0.68rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .preview-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.25);
+    }
+
+    .preview-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      display: block;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .preview-meta {
+      padding: 11px 14px;
+    }
+
+    .preview-meta-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .preview-meta-size {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .size-tag {
+      font-size: 0.72rem;
+      margin-top: 4px;
+    }
+
+    .size-tag.smaller { color: var(--green); }
+    .size-tag.larger  { color: var(--orange); }
+
+    /* Download */
+    .download-btn {
+      width: 100%;
+      padding: 15px;
+      background: transparent;
+      color: var(--teal);
+      border: 2px solid var(--teal);
+      border-radius: 11px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+
+    .download-btn:hover {
+      background: var(--teal-dim);
+      box-shadow: 0 0 24px rgba(0,212,232,0.15);
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(0,212,232,0.14);
+      background: rgba(4, 10, 20, 0.92);
+      padding: 18px 24px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brain {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .footer-text {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-text a {
+      color: var(--teal);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .footer-text a:hover { opacity: 0.75; text-decoration: underline; }
+
+    .footer-sep { opacity: 0.35; margin: 0 6px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .card { padding: 24px 18px; }
+      .logo-row h1 { font-size: 2.2rem; }
+      .preview-grid { grid-template-columns: 1fr; }
+      .fmt-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Neural network particle canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<div class="page">
+
+  <!-- ── Header ── -->
+  <header>
+    <p class="eyebrow">Image Conversion Tool</p>
+    <div class="logo-row">
+      <!-- Icon: overlapping image frames with arrows -->
+      <svg class="logo-icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="9" width="26" height="21" rx="3.5" stroke="#00d4e8" stroke-width="2"/>
+        <circle cx="10" cy="16" r="2.5" fill="#00d4e8"/>
+        <path d="M3 26 l8-8 6 6 5-4 7 6" stroke="#00d4e8" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M32 21 l5 5 -5 5" stroke="#00d4e8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M37 26 H28" stroke="#00d4e8" stroke-width="2.2" stroke-linecap="round"/>
+        <rect x="23" y="22" width="26" height="21" rx="3.5" fill="#06101e" stroke="#00d4e8" stroke-width="2"/>
+        <circle cx="30" cy="29" r="2.5" fill="#00d4e8" opacity="0.55"/>
+        <path d="M23 39 l8-8 6 6 5-4 4 3.5" stroke="#00d4e8" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+      <h1>Web<span>Pify</span></h1>
+    </div>
+    <p class="header-sub">Convert images instantly in your browser — no uploads, no servers, completely private.</p>
+    <div class="header-pills">
+      <span class="pill">JPEG</span>
+      <span class="pill">PNG</span>
+      <span class="pill">WebP</span>
+      <span class="pill">GIF</span>
+      <span class="pill">BMP</span>
+      <span class="pill">AVIF</span>
+    </div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main>
+    <div class="card">
+      <p class="card-eyebrow">Converter</p>
+      <h2 class="card-heading">Image Format Converter</h2>
+
+      <!-- Drop zone -->
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput"
+          accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp,image/avif" />
+
+        <svg class="drop-icon" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="4" y="8" width="44" height="36" rx="5" stroke-dasharray="5 3.5"/>
+          <path d="M26 34 V18" stroke-linecap="round"/>
+          <path d="M19 25 l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 34 l11-11 9 9 7-7 13 10" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+        </svg>
+
+        <p class="drop-primary"><strong>Click to browse</strong> or drag &amp; drop</p>
+        <p class="drop-formats">JPEG · PNG · WebP · GIF · BMP · AVIF</p>
+      </div>
+
+      <!-- File info bar -->
+      <div class="file-bar" id="fileBar">
+        <svg class="file-bar-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="3" y="3" width="26" height="26" rx="4"/>
+          <circle cx="11" cy="12" r="2.5"/>
+          <path d="M3 22 l8-8 6 6 4-4 8 7"/>
+        </svg>
+        <div class="file-bar-info">
+          <div class="file-bar-name" id="fName">—</div>
+          <div class="file-bar-meta" id="fMeta">—</div>
+        </div>
+        <button class="file-bar-clear" id="fileClear" title="Remove image">✕</button>
+      </div>
+
+      <!-- Options (shown after file selected) -->
+      <div class="options" id="options">
+        <div class="hr"></div>
+
+        <p class="opt-label">Convert to</p>
+        <div class="fmt-group">
+          <button class="fmt-btn active" data-fmt="image/webp">WebP</button>
+          <button class="fmt-btn"        data-fmt="image/jpeg">JPEG</button>
+          <button class="fmt-btn"        data-fmt="image/png">PNG</button>
+        </div>
+
+        <div class="quality-row show" id="qualityRow">
+          <div class="quality-header">
+            <p class="opt-label" style="margin:0">Quality</p>
+            <span class="quality-val" id="qualVal">85%</span>
+          </div>
+          <input type="range" id="qualSlider" min="1" max="100" value="85" />
+        </div>
+
+        <button class="convert-btn" id="convertBtn">Convert Image</button>
+
+        <!-- Result -->
+        <div class="result" id="result">
+          <div class="hr"></div>
+          <p class="result-label">Result</p>
+
+          <div class="preview-grid">
+            <div class="preview-card">
+              <img id="origImg" src="" alt="Original" />
+              <div class="preview-meta">
+                <p class="preview-meta-label">Original</p>
+                <p class="preview-meta-size" id="origSize">—</p>
+                <p class="preview-meta-label" id="origFmt" style="margin-top:4px">—</p>
+              </div>
+            </div>
+            <div class="preview-card">
+              <img id="convImg" src="" alt="Converted" />
+              <div class="preview-meta">
+                <p class="preview-meta-label">Converted</p>
+                <p class="preview-meta-size" id="convSize">—</p>
+                <p class="size-tag" id="sizeDiff"></p>
+              </div>
+            </div>
+          </div>
+
+          <button class="download-btn" id="downloadBtn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                 stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <path d="M9 2v9"/>
+              <path d="M5 7.5 l4 4 4-4"/>
+              <path d="M2 15 h14"/>
+            </svg>
+            Download Converted Image
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-inner">
+    <!-- Mini brain/node icon matching NeuroCortex palette -->
+    <svg class="footer-brain" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="13" cy="13" r="4" stroke="#00d4e8" stroke-width="1.6"/>
+      <circle cx="13" cy="3"  r="1.2" fill="#00d4e8"/>
+      <circle cx="23" cy="13" r="1.2" fill="#00d4e8"/>
+      <circle cx="13" cy="23" r="1.2" fill="#00d4e8"/>
+      <circle cx="3"  cy="13" r="1.2" fill="#00d4e8"/>
+      <circle cx="19.5" cy="6.5"  r="1" fill="#00d4e8" opacity="0.5"/>
+      <circle cx="19.5" cy="19.5" r="1" fill="#00d4e8" opacity="0.5"/>
+      <circle cx="6.5"  cy="6.5"  r="1" fill="#00d4e8" opacity="0.5"/>
+      <circle cx="6.5"  cy="19.5" r="1" fill="#00d4e8" opacity="0.5"/>
+      <line x1="13" y1="4.2"  x2="13" y2="9"   stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
+      <line x1="21.8" y1="13" x2="17" y2="13"   stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
+      <line x1="13"  y1="21.8" x2="13" y2="17"  stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
+      <line x1="4.2" y1="13"  x2="9"  y2="13"   stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
+    </svg>
+    <p class="footer-text">
+      WebPify
+      <span class="footer-sep">|</span>
+      A <a href="https://github.com/neurocortex-ltd" target="_blank" rel="noopener">NeuroCortex Ltd</a> Tool
+      <span class="footer-sep">|</span>
+      &copy; 2026
+    </p>
+  </div>
+</footer>
+
+<script>
+  /* ══════════════════════════════════════════════
+     Neural Network Background Animation
+  ══════════════════════════════════════════════ */
+  (function () {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    const TEAL   = '0, 212, 232';
+    const N      = 65;
+    const DIST   = 130;
+    let pts      = [];
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function init() {
+      pts = Array.from({ length: N }, () => ({
+        x:  Math.random() * canvas.width,
+        y:  Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r:  Math.random() * 1.8 + 0.8,
+      }));
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx   = pts[i].x - pts[j].x;
+          const dy   = pts[i].y - pts[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < DIST) {
+            ctx.strokeStyle = `rgba(${TEAL},${(1 - dist / DIST) * 0.28})`;
+            ctx.lineWidth   = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      pts.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${TEAL}, 0.65)`;
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height)  p.vy *= -1;
+      });
+
+      requestAnimationFrame(tick);
+    }
+
+    resize();
+    init();
+    tick();
+    window.addEventListener('resize', () => { resize(); init(); });
+  })();
+
+
+  /* ══════════════════════════════════════════════
+     Converter App
+  ══════════════════════════════════════════════ */
+  const dropZone   = document.getElementById('dropZone');
+  const fileInput  = document.getElementById('fileInput');
+  const fileBar    = document.getElementById('fileBar');
+  const fName      = document.getElementById('fName');
+  const fMeta      = document.getElementById('fMeta');
+  const fileClear  = document.getElementById('fileClear');
+  const options    = document.getElementById('options');
+  const qualityRow = document.getElementById('qualityRow');
+  const qualSlider = document.getElementById('qualSlider');
+  const qualVal    = document.getElementById('qualVal');
+  const convertBtn = document.getElementById('convertBtn');
+  const result     = document.getElementById('result');
+  const origImg    = document.getElementById('origImg');
+  const convImg    = document.getElementById('convImg');
+  const origSize   = document.getElementById('origSize');
+  const convSize   = document.getElementById('convSize');
+  const origFmt    = document.getElementById('origFmt');
+  const sizeDiff   = document.getElementById('sizeDiff');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  let currentFile  = null;
+  let selectedFmt  = 'image/webp';
+  let convertedBlob = null;
+
+  /* ── Helpers ── */
+  const fmtLabel = t => ({ 'image/jpeg':'JPEG','image/png':'PNG','image/webp':'WebP',
+    'image/gif':'GIF','image/bmp':'BMP','image/avif':'AVIF' }[t] || t);
+
+  const fmtExt   = t => ({ 'image/webp':'webp','image/jpeg':'jpg','image/png':'png' }[t] || 'bin');
+
+  function bytes(n) {
+    if (n < 1024)       return n + ' B';
+    if (n < 1024*1024)  return (n/1024).toFixed(1) + ' KB';
+    return (n/1024/1024).toFixed(2) + ' MB';
+  }
+
+  function setPct(v) {
+    qualSlider.style.setProperty('--pct', v + '%');
+  }
+
+  /* ── Format buttons ── */
+  document.querySelectorAll('.fmt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedFmt = btn.dataset.fmt;
+      qualityRow.classList.toggle('show', selectedFmt !== 'image/png');
+      result.classList.remove('show');
+      convertedBlob = null;
+    });
+  });
+
+  /* ── Quality slider ── */
+  setPct(85);
+  qualSlider.addEventListener('input', () => {
+    qualVal.textContent = qualSlider.value + '%';
+    setPct(qualSlider.value);
+    result.classList.remove('show');
+    convertedBlob = null;
+  });
+
+  /* ── Drag & Drop ── */
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadFile(f);
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) loadFile(fileInput.files[0]);
+  });
+
+  /* ── Clear ── */
+  fileClear.addEventListener('click', () => {
+    currentFile = null;
+    fileInput.value = '';
+    fileBar.classList.remove('show');
+    options.classList.remove('show');
+    result.classList.remove('show');
+    convertedBlob = null;
+  });
+
+  /* ── Load file ── */
+  function loadFile(file) {
+    currentFile = file;
+    fName.textContent = file.name;
+    fMeta.textContent = `${fmtLabel(file.type)} · ${bytes(file.size)}`;
+    fileBar.classList.add('show');
+    options.classList.add('show');
+    result.classList.remove('show');
+    convertedBlob = null;
+  }
+
+  /* ── Convert ── */
+  convertBtn.addEventListener('click', async () => {
+    if (!currentFile) return;
+
+    convertBtn.disabled = true;
+    convertBtn.textContent = 'Converting…';
+
+    try {
+      const img = new Image();
+      const url = URL.createObjectURL(currentFile);
+
+      await new Promise((res, rej) => {
+        img.onload = res;
+        img.onerror = rej;
+        img.src = url;
+      });
+
+      const cvs = document.createElement('canvas');
+      cvs.width  = img.naturalWidth;
+      cvs.height = img.naturalHeight;
+      const c = cvs.getContext('2d');
+
+      // JPEG needs opaque background (no alpha support)
+      if (selectedFmt === 'image/jpeg') {
+        c.fillStyle = '#ffffff';
+        c.fillRect(0, 0, cvs.width, cvs.height);
+      }
+      c.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+
+      const quality = selectedFmt === 'image/png'
+        ? undefined
+        : parseInt(qualSlider.value) / 100;
+
+      cvs.toBlob(blob => {
+        convertedBlob = blob;
+
+        origImg.src  = URL.createObjectURL(currentFile);
+        convImg.src  = URL.createObjectURL(blob);
+        origSize.textContent = bytes(currentFile.size);
+        convSize.textContent = bytes(blob.size);
+        origFmt.textContent  = fmtLabel(currentFile.type);
+
+        const diff = currentFile.size - blob.size;
+        if (diff > 0) {
+          const pct = ((diff / currentFile.size) * 100).toFixed(1);
+          sizeDiff.className   = 'size-tag smaller';
+          sizeDiff.textContent = `▼ ${pct}% smaller`;
+        } else if (diff < 0) {
+          const pct = ((Math.abs(diff) / currentFile.size) * 100).toFixed(1);
+          sizeDiff.className   = 'size-tag larger';
+          sizeDiff.textContent = `▲ ${pct}% larger`;
+        } else {
+          sizeDiff.textContent = '';
+        }
+
+        result.classList.add('show');
+        convertBtn.disabled     = false;
+        convertBtn.textContent  = 'Convert Image';
+
+        // Smooth scroll to result
+        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, selectedFmt, quality);
+
+    } catch (err) {
+      console.error(err);
+      convertBtn.disabled    = false;
+      convertBtn.textContent = 'Convert Image';
+      alert('Could not convert this image. Please try a different file.');
+    }
+  });
+
+  /* ── Download ── */
+  downloadBtn.addEventListener('click', () => {
+    if (!convertedBlob || !currentFile) return;
+    const base = currentFile.name.replace(/\.[^/.]+$/, '');
+    const ext  = fmtExt(selectedFmt);
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(convertedBlob);
+    a.download = `${base}.${ext}`;
+    a.click();
+  });
+</script>
+</body>
+</html>
