@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://webpify.neurocortex.net/sitemap.xml

@@ -3,513 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebPify – Image Format Converter</title>
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg:           #06101e;
-      --bg-card:      #0c1b2e;
-      --teal:         #00d4e8;
-      --teal-dim:     rgba(0, 212, 232, 0.18);
-      --teal-border:  rgba(0, 212, 232, 0.32);
-      --teal-glow:    rgba(0, 212, 232, 0.07);
-      --text:         #dff0f5;
-      --muted:        #5d7e95;
-      --border:       rgba(255,255,255,0.06);
-      --green:        #4ade80;
-      --orange:       #fb923c;
+  <title>Free Image Converter Online | WebP, JPG, PNG | WebPify</title>
+  <meta name="description" content="Free online image converter. Convert JPEG, PNG, WebP, GIF, BMP, and AVIF in seconds. Private browser-based conversion with no uploads." />
+  <meta name="keywords" content="image converter, WebP converter, JPEG converter, PNG converter, online image converter, free image converter" />
+  <meta name="author" content="NeuroCortex Ltd" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#06101e" />
+  <link rel="canonical" href="https://webpify.neurocortex.net/" />
+  <link rel="sitemap" type="application/xml" href="https://webpify.neurocortex.net/sitemap.xml" />
+  <link rel="alternate" hreflang="en" href="https://webpify.neurocortex.net/" />
+  <link rel="alternate" hreflang="x-default" href="https://webpify.neurocortex.net/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Free Image Converter Online | WebPify" />
+  <meta property="og:description" content="Convert JPEG, PNG, WebP, GIF, BMP, and AVIF in your browser. No uploads needed." />
+  <meta property="og:url" content="https://webpify.neurocortex.net/" />
+  <meta property="og:image" content="https://webpify.neurocortex.net/nci_trans-light.webp" />
+  <meta property="og:site_name" content="WebPify" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Image Converter Online | WebPify" />
+  <meta name="twitter:description" content="Convert JPEG, PNG, WebP, GIF, BMP, and AVIF in your browser. No uploads needed." />
+  <meta name="twitter:image" content="https://webpify.neurocortex.net/nci_trans-light.webp" />
+  <meta name="twitter:url" content="https://webpify.neurocortex.net/" />
+  <link rel="icon" href="nci_trans-light.webp" type="image/webp" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "WebPify",
+      "url": "https://webpify.neurocortex.net/",
+      "image": "https://webpify.neurocortex.net/nci_trans-light.webp",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "description": "Free online image converter that runs in your browser and converts images to WebP, JPEG, or PNG.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "NeuroCortex Ltd",
+        "url": "https://neurocortex.net/"
+      }
     }
-
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to convert an image with WebPify",
+      "description": "Convert an image to WebP, JPEG, or PNG in three quick steps.",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Upload image",
+          "text": "Click to browse or drag and drop your image file."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Choose format and quality",
+          "text": "Select WebP, JPEG, or PNG and adjust quality if needed."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Convert and download",
+          "text": "Click Convert Image, then download your converted file."
+        }
+      ]
     }
-
-    /* ── Neural Network Background ── */
-    #bg-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      opacity: 0.45;
-      pointer-events: none;
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "WebPify",
+      "url": "https://webpify.neurocortex.net/"
     }
-
-    .page {
-      position: relative;
-      z-index: 1;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What formats can I upload?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can upload JPEG, PNG, WebP, GIF, BMP, and AVIF images."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What formats can I convert to?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can convert images to WebP, JPEG, or PNG."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is WebPify private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Conversion happens in your browser, so your files are not uploaded to a server."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is WebPify free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. WebPify is free to use."
+          }
+        }
+      ]
     }
-
-    /* ── Header ── */
-    header {
-      text-align: center;
-      padding: 56px 20px 36px;
-    }
-
-    .eyebrow {
-      font-size: 0.7rem;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 18px;
-    }
-
-    .logo-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .logo-icon {
-      width: 52px;
-      height: 52px;
-      filter: drop-shadow(0 0 14px var(--teal));
-    }
-
-    .logo-row h1 {
-      font-size: 3rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      color: #fff;
-    }
-
-    .logo-row h1 span { color: var(--teal); }
-
-    .header-sub {
-      font-size: 0.95rem;
-      color: var(--muted);
-      max-width: 380px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    .header-pills {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--teal);
-      border: 1px solid var(--teal-border);
-      border-radius: 50px;
-      padding: 4px 12px;
-    }
-
-    /* ── Main ── */
-    main {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      padding: 10px 20px 60px;
-    }
-
-    /* ── Card ── */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--teal-border);
-      border-radius: 18px;
-      padding: 38px;
-      width: 100%;
-      max-width: 640px;
-      box-shadow:
-        0 0 0 1px rgba(0,212,232,0.04),
-        0 0 60px var(--teal-glow),
-        0 24px 64px rgba(0,0,0,0.45);
-    }
-
-    .card-eyebrow {
-      font-size: 0.68rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 6px;
-    }
-
-    .card-heading {
-      font-size: 1.55rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 28px;
-    }
-
-    /* ── Drop Zone ── */
-    .drop-zone {
-      position: relative;
-      border: 2px dashed var(--teal-border);
-      border-radius: 14px;
-      padding: 52px 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      background: var(--teal-glow);
-    }
-
-    .drop-zone:hover, .drop-zone.over {
-      border-color: var(--teal);
-      background: rgba(0,212,232,0.11);
-    }
-
-    .drop-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .drop-icon {
-      width: 52px;
-      height: 52px;
-      color: var(--teal);
-      margin: 0 auto 18px;
-    }
-
-    .drop-primary {
-      font-size: 1rem;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .drop-primary strong { color: var(--teal); }
-
-    .drop-formats {
-      font-size: 0.78rem;
-      color: var(--muted);
-      letter-spacing: 1px;
-    }
-
-    /* ── File Info Bar ── */
-    .file-bar {
-      display: none;
-      align-items: center;
-      gap: 13px;
-      margin-top: 14px;
-      padding: 13px 16px;
-      background: rgba(0,212,232,0.06);
-      border: 1px solid var(--teal-border);
-      border-radius: 11px;
-    }
-
-    .file-bar.show { display: flex; }
-
-    .file-bar-icon {
-      width: 32px;
-      height: 32px;
-      color: var(--teal);
-      flex-shrink: 0;
-    }
-
-    .file-bar-info { flex: 1; min-width: 0; }
-
-    .file-bar-name {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .file-bar-meta {
-      font-size: 0.73rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .file-bar-clear {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 1.1rem;
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 6px;
-      transition: color 0.2s, background 0.2s;
-      line-height: 1;
-    }
-
-    .file-bar-clear:hover { color: #ff6b6b; background: rgba(255,107,107,0.1); }
-
-    /* ── Options ── */
-    .options { display: none; }
-    .options.show { display: block; }
-
-    .hr { height: 1px; background: var(--border); margin: 28px 0; }
-
-    .opt-label {
-      font-size: 0.72rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    /* Format toggle */
-    .fmt-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 26px;
-    }
-
-    .fmt-btn {
-      flex: 1;
-      padding: 13px 10px;
-      background: transparent;
-      border: 1px solid var(--teal-border);
-      border-radius: 10px;
-      color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-    }
-
-    .fmt-btn:hover {
-      border-color: var(--teal);
-      color: var(--teal);
-      background: var(--teal-glow);
-    }
-
-    .fmt-btn.active {
-      border-color: var(--teal);
-      background: var(--teal-dim);
-      color: var(--teal);
-      box-shadow: 0 0 18px rgba(0,212,232,0.12);
-    }
-
-    /* Quality slider */
-    .quality-row { display: none; margin-bottom: 26px; }
-    .quality-row.show { display: block; }
-
-    .quality-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .quality-val {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--teal);
-    }
-
-    input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 5px;
-      border-radius: 5px;
-      outline: none;
-      background: linear-gradient(
-        to right,
-        var(--teal) 0%,
-        var(--teal) var(--pct, 85%),
-        rgba(255,255,255,0.1) var(--pct, 85%),
-        rgba(255,255,255,0.1) 100%
-      );
-      cursor: pointer;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 10px rgba(0,212,232,0.6);
-      cursor: pointer;
-    }
-
-    input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 10px rgba(0,212,232,0.6);
-      cursor: pointer;
-      border: none;
-    }
-
-    /* Convert button */
-    .convert-btn {
-      width: 100%;
-      padding: 17px;
-      background: linear-gradient(135deg, #00b5c8, #00d4e8);
-      color: #04111f;
-      border: none;
-      border-radius: 11px;
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 24px rgba(0,212,232,0.28);
-    }
-
-    .convert-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,212,232,0.42);
-    }
-
-    .convert-btn:active { transform: translateY(0); }
-
-    .convert-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    /* ── Result ── */
-    .result { display: none; }
-    .result.show { display: block; }
-
-    .result-label {
-      font-size: 0.68rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 16px;
-    }
-
-    .preview-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .preview-card {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      background: rgba(0,0,0,0.25);
-    }
-
-    .preview-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: contain;
-      display: block;
-      background: rgba(0,0,0,0.3);
-    }
-
-    .preview-meta {
-      padding: 11px 14px;
-    }
-
-    .preview-meta-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .preview-meta-size {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .size-tag {
-      font-size: 0.72rem;
-      margin-top: 4px;
-    }
-
-    .size-tag.smaller { color: var(--green); }
-    .size-tag.larger  { color: var(--orange); }
-
-    /* Download */
-    .download-btn {
-      width: 100%;
-      padding: 15px;
-      background: transparent;
-      color: var(--teal);
-      border: 2px solid var(--teal);
-      border-radius: 11px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-    }
-
-    .download-btn:hover {
-      background: var(--teal-dim);
-      box-shadow: 0 0 24px rgba(0,212,232,0.15);
-    }
-
-    /* ── Footer ── */
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid rgba(0,212,232,0.14);
-      background: rgba(4, 10, 20, 0.92);
-      padding: 18px 24px;
-    }
-
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .footer-brain {
-      width: 26px;
-      height: 26px;
-      flex-shrink: 0;
-    }
-
-    .footer-text {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .footer-text a {
-      color: var(--teal);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-
-    .footer-text a:hover { opacity: 0.75; text-decoration: underline; }
-
-    .footer-sep { opacity: 0.35; margin: 0 6px; }
-
-    /* ── Responsive ── */
-    @media (max-width: 480px) {
-      .card { padding: 24px 18px; }
-      .logo-row h1 { font-size: 2.2rem; }
-      .preview-grid { grid-template-columns: 1fr; }
-      .fmt-group { flex-direction: column; }
-    }
-  </style>
+  </script>
 </head>
 <body>
 
@@ -535,7 +146,7 @@
       </svg>
       <h1>Web<span>Pify</span></h1>
     </div>
-    <p class="header-sub">Convert images instantly in your browser — no uploads, no servers, completely private.</p>
+    <p class="header-sub">Convert images instantly in your browser. No uploads, no servers, no waiting.</p>
     <div class="header-pills">
       <span class="pill">JPEG</span>
       <span class="pill">PNG</span>
@@ -640,285 +251,54 @@
       </div>
     </div>
   </main>
+
+  <section class="seo-content" aria-label="About WebPify and FAQ">
+    <div class="seo-content-inner">
+      <h2>Free Online Image Converter</h2>
+      <p>
+        WebPify is a free image converter for WebP, JPEG, and PNG. It works fully in your browser,
+        so your files stay on your device. No account, no uploads, and no waiting for a server.
+      </p>
+
+      <h2>How to Convert an Image in 3 Steps</h2>
+      <ol>
+        <li>Upload your image by clicking browse or using drag and drop.</li>
+        <li>Choose output format (WebP, JPEG, or PNG) and quality settings.</li>
+        <li>Click convert, then download your new image file.</li>
+      </ol>
+
+      <h2>Frequently Asked Questions</h2>
+
+      <h3>What formats can I upload?</h3>
+      <p>You can upload JPEG, PNG, WebP, GIF, BMP, and AVIF images.</p>
+
+      <h3>What formats can I convert to?</h3>
+      <p>You can convert images to WebP, JPEG, or PNG.</p>
+
+      <h3>Is WebPify private?</h3>
+      <p>Yes. Conversion happens in your browser, so your image files are not uploaded to a server.</p>
+
+      <h3>Is WebPify free?</h3>
+      <p>Yes. WebPify is free to use.</p>
+    </div>
+  </section>
 </div>
 
 <!-- ── Footer ── -->
 <footer>
   <div class="footer-inner">
     <!-- Mini brain/node icon matching NeuroCortex palette -->
-    <svg class="footer-brain" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="13" cy="13" r="4" stroke="#00d4e8" stroke-width="1.6"/>
-      <circle cx="13" cy="3"  r="1.2" fill="#00d4e8"/>
-      <circle cx="23" cy="13" r="1.2" fill="#00d4e8"/>
-      <circle cx="13" cy="23" r="1.2" fill="#00d4e8"/>
-      <circle cx="3"  cy="13" r="1.2" fill="#00d4e8"/>
-      <circle cx="19.5" cy="6.5"  r="1" fill="#00d4e8" opacity="0.5"/>
-      <circle cx="19.5" cy="19.5" r="1" fill="#00d4e8" opacity="0.5"/>
-      <circle cx="6.5"  cy="6.5"  r="1" fill="#00d4e8" opacity="0.5"/>
-      <circle cx="6.5"  cy="19.5" r="1" fill="#00d4e8" opacity="0.5"/>
-      <line x1="13" y1="4.2"  x2="13" y2="9"   stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
-      <line x1="21.8" y1="13" x2="17" y2="13"   stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
-      <line x1="13"  y1="21.8" x2="13" y2="17"  stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
-      <line x1="4.2" y1="13"  x2="9"  y2="13"   stroke="#00d4e8" stroke-width="1" opacity="0.4"/>
-    </svg>
+    <img class="footer-brain" src="nci_trans-light.webp" alt="NeuroCortex logo" />
     <p class="footer-text">
       WebPify
       <span class="footer-sep">|</span>
-      A <a href="https://github.com/neurocortex-ltd" target="_blank" rel="noopener">NeuroCortex Ltd</a> Tool
+      A <a href="https://neurocortex.net/" target="_blank" rel="noopener">NeuroCortex Ltd</a> Tool
       <span class="footer-sep">|</span>
-      &copy; 2026
+      <span id="footerYear">&copy; 2026</span>
     </p>
   </div>
 </footer>
 
-<script>
-  /* ══════════════════════════════════════════════
-     Neural Network Background Animation
-  ══════════════════════════════════════════════ */
-  (function () {
-    const canvas = document.getElementById('bg-canvas');
-    const ctx    = canvas.getContext('2d');
-    const TEAL   = '0, 212, 232';
-    const N      = 65;
-    const DIST   = 130;
-    let pts      = [];
-
-    function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    function init() {
-      pts = Array.from({ length: N }, () => ({
-        x:  Math.random() * canvas.width,
-        y:  Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        r:  Math.random() * 1.8 + 0.8,
-      }));
-    }
-
-    function tick() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < pts.length; i++) {
-        for (let j = i + 1; j < pts.length; j++) {
-          const dx   = pts[i].x - pts[j].x;
-          const dy   = pts[i].y - pts[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < DIST) {
-            ctx.strokeStyle = `rgba(${TEAL},${(1 - dist / DIST) * 0.28})`;
-            ctx.lineWidth   = 0.6;
-            ctx.beginPath();
-            ctx.moveTo(pts[i].x, pts[i].y);
-            ctx.lineTo(pts[j].x, pts[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      pts.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${TEAL}, 0.65)`;
-        ctx.fill();
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height)  p.vy *= -1;
-      });
-
-      requestAnimationFrame(tick);
-    }
-
-    resize();
-    init();
-    tick();
-    window.addEventListener('resize', () => { resize(); init(); });
-  })();
-
-
-  /* ══════════════════════════════════════════════
-     Converter App
-  ══════════════════════════════════════════════ */
-  const dropZone   = document.getElementById('dropZone');
-  const fileInput  = document.getElementById('fileInput');
-  const fileBar    = document.getElementById('fileBar');
-  const fName      = document.getElementById('fName');
-  const fMeta      = document.getElementById('fMeta');
-  const fileClear  = document.getElementById('fileClear');
-  const options    = document.getElementById('options');
-  const qualityRow = document.getElementById('qualityRow');
-  const qualSlider = document.getElementById('qualSlider');
-  const qualVal    = document.getElementById('qualVal');
-  const convertBtn = document.getElementById('convertBtn');
-  const result     = document.getElementById('result');
-  const origImg    = document.getElementById('origImg');
-  const convImg    = document.getElementById('convImg');
-  const origSize   = document.getElementById('origSize');
-  const convSize   = document.getElementById('convSize');
-  const origFmt    = document.getElementById('origFmt');
-  const sizeDiff   = document.getElementById('sizeDiff');
-  const downloadBtn = document.getElementById('downloadBtn');
-
-  let currentFile  = null;
-  let selectedFmt  = 'image/webp';
-  let convertedBlob = null;
-
-  /* ── Helpers ── */
-  const fmtLabel = t => ({ 'image/jpeg':'JPEG','image/png':'PNG','image/webp':'WebP',
-    'image/gif':'GIF','image/bmp':'BMP','image/avif':'AVIF' }[t] || t);
-
-  const fmtExt   = t => ({ 'image/webp':'webp','image/jpeg':'jpg','image/png':'png' }[t] || 'bin');
-
-  function bytes(n) {
-    if (n < 1024)       return n + ' B';
-    if (n < 1024*1024)  return (n/1024).toFixed(1) + ' KB';
-    return (n/1024/1024).toFixed(2) + ' MB';
-  }
-
-  function setPct(v) {
-    qualSlider.style.setProperty('--pct', v + '%');
-  }
-
-  /* ── Format buttons ── */
-  document.querySelectorAll('.fmt-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedFmt = btn.dataset.fmt;
-      qualityRow.classList.toggle('show', selectedFmt !== 'image/png');
-      result.classList.remove('show');
-      convertedBlob = null;
-    });
-  });
-
-  /* ── Quality slider ── */
-  setPct(85);
-  qualSlider.addEventListener('input', () => {
-    qualVal.textContent = qualSlider.value + '%';
-    setPct(qualSlider.value);
-    result.classList.remove('show');
-    convertedBlob = null;
-  });
-
-  /* ── Drag & Drop ── */
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('over');
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) loadFile(f);
-  });
-
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) loadFile(fileInput.files[0]);
-  });
-
-  /* ── Clear ── */
-  fileClear.addEventListener('click', () => {
-    currentFile = null;
-    fileInput.value = '';
-    fileBar.classList.remove('show');
-    options.classList.remove('show');
-    result.classList.remove('show');
-    convertedBlob = null;
-  });
-
-  /* ── Load file ── */
-  function loadFile(file) {
-    currentFile = file;
-    fName.textContent = file.name;
-    fMeta.textContent = `${fmtLabel(file.type)} · ${bytes(file.size)}`;
-    fileBar.classList.add('show');
-    options.classList.add('show');
-    result.classList.remove('show');
-    convertedBlob = null;
-  }
-
-  /* ── Convert ── */
-  convertBtn.addEventListener('click', async () => {
-    if (!currentFile) return;
-
-    convertBtn.disabled = true;
-    convertBtn.textContent = 'Converting…';
-
-    try {
-      const img = new Image();
-      const url = URL.createObjectURL(currentFile);
-
-      await new Promise((res, rej) => {
-        img.onload = res;
-        img.onerror = rej;
-        img.src = url;
-      });
-
-      const cvs = document.createElement('canvas');
-      cvs.width  = img.naturalWidth;
-      cvs.height = img.naturalHeight;
-      const c = cvs.getContext('2d');
-
-      // JPEG needs opaque background (no alpha support)
-      if (selectedFmt === 'image/jpeg') {
-        c.fillStyle = '#ffffff';
-        c.fillRect(0, 0, cvs.width, cvs.height);
-      }
-      c.drawImage(img, 0, 0);
-      URL.revokeObjectURL(url);
-
-      const quality = selectedFmt === 'image/png'
-        ? undefined
-        : parseInt(qualSlider.value) / 100;
-
-      cvs.toBlob(blob => {
-        convertedBlob = blob;
-
-        origImg.src  = URL.createObjectURL(currentFile);
-        convImg.src  = URL.createObjectURL(blob);
-        origSize.textContent = bytes(currentFile.size);
-        convSize.textContent = bytes(blob.size);
-        origFmt.textContent  = fmtLabel(currentFile.type);
-
-        const diff = currentFile.size - blob.size;
-        if (diff > 0) {
-          const pct = ((diff / currentFile.size) * 100).toFixed(1);
-          sizeDiff.className   = 'size-tag smaller';
-          sizeDiff.textContent = `▼ ${pct}% smaller`;
-        } else if (diff < 0) {
-          const pct = ((Math.abs(diff) / currentFile.size) * 100).toFixed(1);
-          sizeDiff.className   = 'size-tag larger';
-          sizeDiff.textContent = `▲ ${pct}% larger`;
-        } else {
-          sizeDiff.textContent = '';
-        }
-
-        result.classList.add('show');
-        convertBtn.disabled     = false;
-        convertBtn.textContent  = 'Convert Image';
-
-        // Smooth scroll to result
-        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, selectedFmt, quality);
-
-    } catch (err) {
-      console.error(err);
-      convertBtn.disabled    = false;
-      convertBtn.textContent = 'Convert Image';
-      alert('Could not convert this image. Please try a different file.');
-    }
-  });
-
-  /* ── Download ── */
-  downloadBtn.addEventListener('click', () => {
-    if (!convertedBlob || !currentFile) return;
-    const base = currentFile.name.replace(/\.[^/.]+$/, '');
-    const ext  = fmtExt(selectedFmt);
-    const a    = document.createElement('a');
-    a.href     = URL.createObjectURL(convertedBlob);
-    a.download = `${base}.${ext}`;
-    a.click();
-  });
-</script>
+<script src="app.js"></script>
 </body>
 </html>
